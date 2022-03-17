@@ -4,6 +4,7 @@ const res = require('express/lib/response');
 const mysql = require('mysql2');
 const inputCheck = require('./utils/inputCheck');
 const { endianness } = require('os');
+
 const PORT = process.env.PORT || 3001;
 const app = express();
 
@@ -29,38 +30,41 @@ const db = mysql.createConnection(
 
 //GET ALL CANDIDATES
 
-// app.get('/api/candidates', (req, res) => {
-//   const sql = `SELECT * FROM candidates`;
+app.get('/api/candidates', (req, res) => {
+  const sql = `SELECT candidates.*, parties.name
+  AS party_name FROM candidates LEFT JOIN parties ON candidates.party_id = parties.id`;
 
-//   db.query(sql, (err, rows) => {
-//     if (err) {
-//       res.status(500).json({error: err.message });
-//       return;
-//     }
-//     res.json({
-//       message: 'success',
-//       data: rows
-//     });
-//   });
-// });
+  db.query(sql, (err, rows) => {
+    if (err) {
+      res.status(500).json({error: err.message });
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: rows
+    });
+  });
+});
 
 //GET A SINGLE CANDIDATE 
 
-// app.get('/api/candidate/:id', (req, res) => {
-//   const sql = `SELECT * FROM candidates WHERE id = ?`;
-//   const params = [req.params.id];
+app.get('/api/candidate/:id', (req, res) => {
+  const sql = `SELECT candidates.*, parties.name
+  AS party_name FROM candidates LEFT JOIN parties
+  ON candidates.party_id = parties.id WHERE candidates.id = ?`;
+  const params = [req.params.id];
 
-//   db.query(sql, params, (err, row) => {
-//     if (err) {
-//       res.status(400).json({ error: err.message });
-//       return;
-//     }
-//     res.json({
-//       message: 'success',
-//       data: row
-//     });
-//   });
-// });
+  db.query(sql, params, (err, row) => {
+    if (err) {
+      res.status(400).json({ error: err.message });
+      return;
+    }
+    res.json({
+      message: 'success',
+      data: row
+    });
+  });
+});
 
 // Delete a candidate
 // app.delete('/api/candidate/:id', (req, res) => {
