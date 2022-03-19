@@ -38,6 +38,7 @@ router.get('/voter/:id', (req, res) => {
   });
 });
 
+//Create a voter
 router.post('/voter', ({ body }, res) => {
 
   //Data validation
@@ -62,6 +63,8 @@ router.post('/voter', ({ body }, res) => {
     });
   });
 });
+
+//Update a voter's email
 
 router.put('/voter/:id', (req, res) => {
   //Data validation
@@ -90,6 +93,8 @@ router.put('/voter/:id', (req, res) => {
     }
   });
 });
+
+//Delete a voter
 
 router.delete('/voter/:id', (req, res) => {
   const sql = `DELETE FROM voters WHERE id = ?`;

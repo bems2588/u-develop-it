@@ -50,18 +50,19 @@ router.post('/candidate', ({ body }, res) => {
     res.status(400).json({ error: errors });
     return;
   }
+  
   const sql =  `INSERT INTO candidates (first_name, last_name,industry_connected, party_id) VALUES (?,?,?,?)`;
+  
   const params = [body.first_name, body.last_name,  body.industry_connected, body.party_id]
 
   db.query(sql, params, (err, result) => {
     if(err) {
-      res.status(400).json({ error: err.message});
+      res.status(400).json({ error: err.message });
       return;
     }
     res.json({
       message: 'success',
-      data: body,
-      changes: result.affectedRows
+      data: body
     });
   });
 });
@@ -81,6 +82,7 @@ router.put('/candidate/:id', (req, res) => {
   WHERE id = ?`;
 
   const params = [req.body.party_id, req.params.id];
+  
   db.query(sql, params, (err, result) => {
     if (err) {
       res.status(400).json({ error: err.message });
@@ -107,7 +109,7 @@ router.delete('/candidate/:id', (req, res) => {
 
   db.query(sql, params, (err, result) => {
     if (err) {
-      res.statusMessage(400).json({ error: res.message });
+      res.status(400).json({ error: res.message });
     } else if (!result.affectedRows) {
       res.json({
         message: 'Candidate not found'
